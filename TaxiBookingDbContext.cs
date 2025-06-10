@@ -10,16 +10,13 @@ namespace Taxi_Booking_System
         public TaxiBookingDbContext(DbContextOptions<TaxiBookingDbContext> dbContextOptions) : base(dbContextOptions) { 
         }
 
-        public DbSet<Users> Users { get; set; }
-       
-        
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public DbSet<User> Users { get; set; }
+       protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Users>()
-               .HasDiscriminator<string>("UserType") // Adds a discriminator column named 'PaymentType'
-               .HasValue<Riders>("Rider")          // Sets discriminator value 'Card' for CardPayment entities
-               .HasValue<Drivers>("Driver");
+            modelBuilder.Entity<User>()
+               .HasDiscriminator<string>("UserType") 
+               .HasValue<Rider>("Rider")          
+               .HasValue<Driver>("Driver");
            DriverConfiguration.Configure(modelBuilder);
             UserConfigurations.Configure(modelBuilder);
             RiderConfiguration.Configure(modelBuilder);

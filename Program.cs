@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using Taxi_Booking_System;
 using Taxi_Booking_System.Interface;
 using Taxi_Booking_System.Middleware;
+using Taxi_Booking_System.MappingProfile;
 using Taxi_Booking_System.Repository;
 using Taxi_Booking_System.Services;
 
@@ -17,25 +18,20 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 });
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAngularApp", policy =>
+    options.AddDefaultPolicy( policy =>
     {
-        policy.WithOrigins("http://localhost:4200") // Angular ka local host
+        policy.WithOrigins("http://localhost:4200")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
 });
-
-
-
-
-
-builder.Services.AddScoped<IUserService, UserServices>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddDbContext<TaxiBookingDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MyTaxiBookingDb")));
 builder.Services.AddScoped<IAuthServices, AuthServices>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
@@ -43,7 +39,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseCors("AllowAngularApp"); // Ye middleware me hona chaiye
+app.UseCors(); 
 
 app.UseMiddleware<ErrorHandlerMiddleware>();
 

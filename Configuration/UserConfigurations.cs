@@ -7,8 +7,8 @@ namespace Taxi_Booking_System.Configuration
     {
         public static void Configure(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Users>().HasKey(x => x.Id);
-            modelBuilder.Entity<Users>(entity =>
+            modelBuilder.Entity<User>().HasKey(x => x.Id);
+            modelBuilder.Entity<User>(entity =>
             {
                 entity.Property(user => user.Name).IsRequired();
                 entity.Property(user => user.PhoneNumber).IsRequired();

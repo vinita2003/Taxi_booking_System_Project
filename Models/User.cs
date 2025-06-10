@@ -4,7 +4,7 @@ using System.Drawing;
 namespace Taxi_Booking_System.Models { 
     public enum UserGender { male, female, others }
 
-    public class Users
+    public class User
     {
         public int Id { get; set; }
 

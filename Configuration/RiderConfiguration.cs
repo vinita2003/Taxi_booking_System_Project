@@ -7,11 +7,13 @@ namespace Taxi_Booking_System.Configuration
     {
         public static void Configure(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Riders>(entity =>
+            modelBuilder.Entity<Rider>(entity =>
             {
                 entity.Property(x => x.EmergencyContactNumber).IsRequired().HasMaxLength(15);
             });
-            }
+
+            
+                }
             
     }
 }

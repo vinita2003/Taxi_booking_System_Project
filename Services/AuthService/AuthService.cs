@@ -5,9 +5,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Taxi_Booking_System.DTO;
 using Taxi_Booking_System.Interface;
 using Taxi_Booking_System.Models;
+
 
 namespace Taxi_Booking_System.Services
 {
@@ -22,60 +22,60 @@ namespace Taxi_Booking_System.Services
 
         }
 
-        public async Task<Users?> RiderRegisterAsync(Riders request)
+        public async Task<User?> RiderRegisterAsync(Rider request)
         {
             if (await _context.Users.AnyAsync(u => u.Name == request.Name))
             {
                 return null;
             }
-            
-            var user = new Riders();
+
+            var user = new Rider();
             user.Name = request.Name;
             user.PhoneNumber = request.PhoneNumber;
             user.Gender = request.Gender;
-            user.Password = new PasswordHasher<Users>().HashPassword(user, request.Password);
-            
+            user.Password = new PasswordHasher<User>().HashPassword(user, request.Password);
+
             user.EmergencyContactNumber = request.EmergencyContactNumber;
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
             return user;
         }
 
-        public async Task<Users?> DriverRegisterAsync(Drivers request)
+        public async Task<User?> DriverRegisterAsync(Driver request)
         {
             if (await _context.Users.AnyAsync(u => u.Name == request.Name))
             {
                 return null;
             }
 
-            var user = new Drivers();
+            var user = new Driver();
             user.Name = request.Name;
             user.PhoneNumber = request.PhoneNumber;
             user.Gender = request.Gender;
-            user.Password = new PasswordHasher<Users>().HashPassword(user, request.Password);
+            user.Password = new PasswordHasher<User>().HashPassword(user, request.Password);
 
             user.CarNumber = request.CarNumber;
             user.CarType = request.CarType;
-           
+
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
             return user;
         }
 
-        public async Task<string?> LoginAsync(Users request)
+        public async Task<string?> LoginAsync(User request)
         {
-            Users? user = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
+            User? user = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
             if (user == null)
             {
                 return null;
             }
-            if (new PasswordHasher<Users>().VerifyHashedPassword(user, user.Password, request.Password) == PasswordVerificationResult.Failed)
+            if (new PasswordHasher<User>().VerifyHashedPassword(user, user.Password, request.Password) == PasswordVerificationResult.Failed)
                 return null;
             string token = CreateToken(user);
             return token;
         }
 
-        private string CreateToken(Users user)
+        private string CreateToken(User user)
         {
             var claims = new List<Claim>
             {

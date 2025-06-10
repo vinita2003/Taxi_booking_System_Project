@@ -7,7 +7,7 @@ namespace Taxi_Booking_System.Configuration
     {
         public static void Configure(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Drivers>(entity =>
+            modelBuilder.Entity<Driver>(entity =>
             {
                 entity.Property(x => x.CarNumber).IsRequired();
                 entity.Property(x => x.CarType).IsRequired();

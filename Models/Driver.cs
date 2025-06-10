@@ -11,7 +11,7 @@ namespace Taxi_Booking_System.Models
     {
         Sedan, Mini, UV
     }
-    public class Drivers : Users
+    public class Driver : User
     {
         public decimal? Rating { get; set; }
         public DriverAvailabilty Availabilty { get; set; } = DriverAvailabilty.Offline;
