@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using TaxiBooking.Api.Middleware;
 using TaxiBooking.Application.Interface;
@@ -19,7 +19,7 @@ builder.Logging.ClearProviders();
         builder.Logging.AddDebug();
         builder.Services.AddControllers().AddJsonOptions(options =>
         {
-            options.JsonSerializerOptions.PropertyNamingPolicy = null;
+            //options.JsonSerializerOptions.PropertyNamingPolicy = null;
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
         builder.Services.AddCors(options =>
@@ -43,7 +43,6 @@ builder.Services.AddScoped<IRiderServices, RiderService>();
         builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<IDriverServices, DriverServices>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-
 .AddJwtBearer(options =>
 
 {
@@ -58,7 +57,30 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         IssuerSigningKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(config["Jwt:Token"]))
     };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var accessToken = context.Request.Query["access_token"];
+            var path = context.HttpContext.Request.Path;
+            Console.WriteLine($"[JWT] Incoming token: {accessToken}");
+            Console.WriteLine($"[Path] Requested path: {path}");
+
+            if (!string.IsNullOrEmpty(accessToken) &&
+                path.StartsWithSegments("/driverHub"))
+            {
+                context.Token = accessToken;
+                Console.WriteLine("[JWT] Token assigned successfully for SignalR");
+            }
+
+            return Task.CompletedTask;
+        }
+    };
 });
+
+builder.Services.AddSignalR();
+builder.Services.AddAuthorization();
 builder.Services.AddSignalR();
 
 var app = builder.Build();
